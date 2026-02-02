@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TECH SHOP - Online Electronics Store</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="logo">
+                <img src="images/logo.jpg" alt="TECH SHOP Logo" id="logo">
+                <h1>TECH SHOP</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#products">Products</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                    <li><a href="#" onclick="openLoginModal()">Login</a></li>
+                </ul>
+            </nav>
+            <div class="cart-icon" onclick="toggleCart()">
+                🛒 Cart (<span id="cart-count">0</span>)
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h2>Discover Premium Technology</h2>
+            <p>Authorized Retailer of World's Leading Tech Brands | Fast Shipping | 30-Day Returns</p>
+            <button onclick="scrollToProducts()">Explore Products</button>
+        </div>
+    </section>
+
+    <!-- Products Section -->
+    <section id="products" class="products-section">
+        <div class="container">
+            <h2>Our Products</h2>
+            <div class="product-grid" id="product-grid">
+                <!-- Products will be loaded by JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Login Modal -->
+    <div id="login-modal" class="modal">
+        <div class="modal-content login-modal-content">
+            <button onclick="closeLoginModal()" class="modal-close">&times;</button>
+            <div class="login-container">
+                <h2>Welcome Back!</h2>
+                <p class="login-subtitle">Sign in to access your account and continue shopping</p>
+                
+                <form id="login-form" onsubmit="handleLogin(event)">
+                    <div class="form-group">
+                        <label for="email">📧 Email</label>
+                        <input type="email" id="email" name="email" required placeholder="Enter your email">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password">🔒 Password</label>
+                        <input type="password" id="password" name="password" required placeholder="Enter your password">
+                    </div>
+                    
+                    <div class="form-options">
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="remember">
+                            <span>Remember me</span>
+                        </label>
+                        <a href="#" class="forgot-password">Forgot Password?</a>
+                    </div>
+                    
+                    <button type="submit" class="login-btn">Login</button>
+                </form>
+                
+                <div class="divider">
+                    <span>OR</span>
+                </div>
+                
+                <div class="social-login">
+                    <button class="social-btn google-btn" onclick="socialLogin('Google')">
+                        <span>G</span> Continue with Google
+                    </button>
+                    <button class="social-btn facebook-btn" onclick="socialLogin('Facebook')">
+                        <span>f</span> Continue with Facebook
+                    </button>
+                    <button class="social-btn apple-btn" onclick="socialLogin('Apple')">
+                        <span></span> Continue with Apple
+                    </button>
+                </div>
+                
+                <p class="signup-link">Don't have an account? <a href="#" onclick="openSignupModal()">Sign Up</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Product Details Modal -->
+    <div id="product-modal" class="modal">
+        <div class="modal-content product-modal-content">
+            <button onclick="closeProductModal()" class="modal-close">&times;</button>
+            <div class="product-details">
+                <div class="product-details-image">
+                    <img id="modal-product-image" src="" alt="Product">
+                    <span class="product-badge" id="modal-product-badge">NEW</span>
+                </div>
+                
+                <div class="product-details-info">
+                    <div class="product-store">
+                        <span class="store-icon">🏪</span>
+                        <span id="modal-product-store">Official Store</span>
+                        <span class="verified-badge">✓ Verified Seller</span>
+                    </div>
+                    
+                    <h2 id="modal-product-name">Product Name</h2>
+                    <p id="modal-product-description">Product description goes here</p>
+                    
+                    <div class="product-rating">
+                        <div class="stars">
+                            <span class="star filled">★</span>
+                            <span class="star filled">★</span>
+                            <span class="star filled">★</span>
+                            <span class="star filled">★</span>
+                            <span class="star half">★</span>
+                        </div>
+                        <span class="rating-text">4.5 out of 5</span>
+                        <span class="review-count">(256 customer reviews)</span>
+                    </div>
+                    
+                    <div class="product-price-section">
+                        <span class="modal-price" id="modal-product-price">$999.99</span>
+                        <span class="price-badge">FREE SHIPPING</span>
+                    </div>
+                    
+                    <div class="product-colors">
+                        <label>Choose Color:</label>
+                        <div class="color-options" id="color-options">
+                            <!-- Colors will be added dynamically -->
+                        </div>
+                        <span class="selected-color" id="selected-color-text">Color: Black</span>
+                    </div>
+                    
+                    <div class="product-quantity">
+                        <label>Quantity:</label>
+                        <div class="quantity-selector">
+                            <button onclick="decreaseQuantity()" class="qty-btn">−</button>
+                            <input type="number" id="modal-quantity" value="1" min="1" max="10" readonly title="Product Quantity">
+                            <button onclick="increaseQuantity()" class="qty-btn">+</button>
+                        </div>
+                        <span class="stock-info" id="stock-info">In Stock: 15 items</span>
+                    </div>
+                    
+                    <div class="product-actions-modal">
+                        <button onclick="addToCartFromModal()" class="btn-add-cart">
+                            🛒 Add to Cart
+                        </button>
+                        <button onclick="buyNow()" class="btn-buy-now">
+                            ⚡ Buy Now
+                        </button>
+                    </div>
+                    
+                    <div class="product-features">
+                        <h3>Product Features:</h3>
+                        <ul id="product-features-list">
+                            <!-- Features will be added dynamically -->
+                        </ul>
+                    </div>
+                    
+                    <div class="product-specs">
+                        <h3>Technical Specifications</h3>
+                        <table class="specs-table" id="specs-table">
+                            <!-- Specs will be added dynamically -->
+                        </table>
+                    </div>
+                    
+                    <div class="product-warranty">
+                        <h3>🛡️ Warranty & Support</h3>
+                        <ul>
+                            <li>✓ Manufacturer's 1-year limited warranty</li>
+                            <li>✓ Extended warranty options available</li>
+                            <li>✓ Free technical support for 90 days</li>
+                            <li>✓ 30-day money-back guarantee</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="product-shipping">
+                        <h3>📦 Shipping & Returns</h3>
+                        <ul>
+                            <li>🚚 Free standard shipping (3-5 business days)</li>
+                            <li>⚡ Express shipping available ($9.99 - next day)</li>
+                            <li>↩️ Free returns within 30 days</li>
+                            <li>📍 Ships from authorized US warehouse</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="product-reviews-section">
+                        <h3>Customer Reviews</h3>
+                        <div class="reviews-summary">
+                            <div class="rating-breakdown">
+                                <div class="overall-rating">
+                                    <span class="big-rating">4.5</span>
+                                    <div>
+                                        <div class="stars">
+                                            <span class="star filled">★</span>
+                                            <span class="star filled">★</span>
+                                            <span class="star filled">★</span>
+                                            <span class="star filled">★</span>
+                                            <span class="star half">★</span>
+                                        </div>
+                                        <p>Based on 256 verified purchases</p>
+                                    </div>
+                                </div>
+                                <div class="rating-bars">
+                                    <div class="rating-bar">
+                                        <span>5★</span>
+                                        <div class="bar"><div class="fill" style="width: 65%"></div></div>
+                                        <span>167</span>
+                                    </div>
+                                    <div class="rating-bar">
+                                        <span>4★</span>
+                                        <div class="bar"><div class="fill" style="width: 20%"></div></div>
+                                        <span>51</span>
+                                    </div>
+                                    <div class="rating-bar">
+                                        <span>3★</span>
+                                        <div class="bar"><div class="fill" style="width: 10%"></div></div>
+                                        <span>26</span>
+                                    </div>
+                                    <div class="rating-bar">
+                                        <span>2★</span>
+                                        <div class="bar"><div class="fill" style="width: 3%"></div></div>
+                                        <span>8</span>
+                                    </div>
+                                    <div class="rating-bar">
+                                        <span>1★</span>
+                                        <div class="bar"><div class="fill" style="width: 2%"></div></div>
+                                        <span>4</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="reviews-list">
+                            <div class="review-item">
+                                <div class="review-header">
+                                    <div class="reviewer-info">
+                                        <strong>Sarah M.</strong>
+                                        <span class="verified-purchase">✓ Verified Purchase</span>
+                                    </div>
+                                    <div class="review-rating">
+                                        <span class="star filled">★</span>
+                                        <span class="star filled">★</span>
+                                        <span class="star filled">★</span>
+                                        <span class="star filled">★</span>
+                                        <span class="star filled">★</span>
+                                    </div>
+                                </div>
+                                <div class="review-date">January 15, 2026</div>
+                                <h4 class="review-title">Exceeded my expectations!</h4>
+                                <p class="review-text">This product is absolutely fantastic. The quality is top-notch and it arrived much faster than expected. The packaging was secure and professional. I've been using it for two weeks now and it performs flawlessly. Highly recommend to anyone looking for reliability and performance.</p>
+                                <div class="review-helpful">
+                                    <button class="helpful-btn">👍 Helpful (24)</button>
+                                    <button class="report-btn">🚩 Report</button>
+                                </div>
+                            </div>
+                            
+                            <div class="review-item">
+                                <div class="review-header">
+                                    <div class="reviewer-info">
+                                        <strong>Michael Chen</strong>
+                                        <span class="verified-purchase">✓ Verified Purchase</span>
+                                    </div>
+                                    <div class="review-rating">
+                                        <span class="star filled">★</span>
+                                        <span class="star filled">★</span>
+                                        <span class="star filled">★</span>
+                                        <span class="star filled">★</span>
+                                        <span class="star">★</span>
+                                    </div>
+                                </div>
+                                <div class="review-date">January 10, 2026</div>
+                                <h4 class="review-title">Great value for money</h4>
+                                <p class="review-text">Very satisfied with this purchase. The product works exactly as described. Only giving 4 stars because the user manual could be more detailed, but overall it's an excellent product. Customer service was also very helpful when I had questions.</p>
+                                <div class="review-helpful">
+                                    <button class="helpful-btn">👍 Helpful (18)</button>
+                                    <button class="report-btn">🚩 Report</button>
+                                </div>
+                            </div>
+                            
+                            <div class="review-item">
+                                <div class="review-header">
+                                    <div class="reviewer-info">
+                                        <strong>Jennifer R.</strong>
+                                        <span class="verified-purchase">✓ Verified Purchase</span>
+                                    </div>
+                                    <div class="review-rating">
+                                        <span class="star filled">★</span>
+                                        <span class="star filled">★</span>
+                                        <span class="star filled">★</span>
+                                        <span class="star filled">★</span>
+                                        <span class="star filled">★</span>
+                                    </div>
+                                </div>
+                                <div class="review-date">January 5, 2026</div>
+                                <h4 class="review-title">Perfect for my needs</h4>
+                                <p class="review-text">I did a lot of research before buying and I'm so glad I chose this one. It's been working perfectly since day one. The build quality is impressive and it feels like a premium product. Definitely worth the investment!</p>
+                                <div class="review-helpful">
+                                    <button class="helpful-btn">👍 Helpful (31)</button>
+                                    <button class="report-btn">🚩 Report</button>
+                                </div>
+                            </div>
+                            
+                            <div class="review-item">
+                                <div class="review-header">
+                                    <div class="reviewer-info">
+                                        <strong>David P.</strong>
+                                        <span class="verified-purchase">✓ Verified Purchase</span>
+                                    </div>
+                                    <div class="review-rating">
+                                        <span class="star filled">★</span>
+                                        <span class="star filled">★</span>
+                                        <span class="star filled">★</span>
+                                        <span class="star filled">★</span>
+                                        <span class="star half">★</span>
+                                    </div>
+                                </div>
+                                <div class="review-date">December 28, 2025</div>
+                                <h4 class="review-title">Solid product, fast shipping</h4>
+                                <p class="review-text">Good quality product that does what it's supposed to do. Shipping was incredibly fast - ordered on Monday and received it Wednesday. The only minor issue is it's slightly larger than I expected from the photos, but that's not a deal breaker.</p>
+                                <div class="review-helpful">
+                                    <button class="helpful-btn">👍 Helpful (12)</button>
+                                    <button class="report-btn">🚩 Report</button>
+                                </div>
+                            </div>
+                            
+                            <div class="review-item">
+                                <div class="review-header">
+                                    <div class="reviewer-info">
+                                        <strong>Emily Watson</strong>
+                                        <span class="verified-purchase">✓ Verified Purchase</span>
+                                    </div>
+                                    <div class="review-rating">
+                                        <span class="star filled">★</span>
+                                        <span class="star filled">★</span>
+                                        <span class="star filled">★</span>
+                                        <span class="star filled">★</span>
+                                        <span class="star filled">★</span>
+                                    </div>
+                                </div>
+                                <div class="review-date">December 20, 2025</div>
+                                <h4 class="review-title">Outstanding customer service</h4>
+                                <p class="review-text">Not only is the product excellent, but the customer service is top-tier. I had a question about compatibility and they responded within an hour with detailed information. The product itself is even better than I hoped. Will definitely buy from TECH SHOP again!</p>
+                                <div class="review-helpful">
+                                    <button class="helpful-btn">👍 Helpful (45)</button>
+                                    <button class="report-btn">🚩 Report</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <button class="load-more-reviews">Load More Reviews</button>
+                    </div>
+                    
+                    <div class="product-qa-section">
+                        <h3>Customer Questions & Answers</h3>
+                        <div class="qa-list">
+                            <div class="qa-item">
+                                <div class="question">
+                                    <strong>Q:</strong> Is this compatible with other brands?
+                                    <span class="qa-author">- Asked by Tom K. on Jan 20, 2026</span>
+                                </div>
+                                <div class="answer">
+                                    <strong>A:</strong> Yes, this product is designed to work with most major brands. Please check the specifications section for detailed compatibility information.
+                                    <span class="qa-author">- Answered by TECH SHOP on Jan 20, 2026</span>
+                                </div>
+                            </div>
+                            
+                            <div class="qa-item">
+                                <div class="question">
+                                    <strong>Q:</strong> Does it come with warranty?
+                                    <span class="qa-author">- Asked by Lisa M. on Jan 18, 2026</span>
+                                </div>
+                                <div class="answer">
+                                    <strong>A:</strong> Yes! All our products include a manufacturer's 1-year limited warranty. You can also purchase extended warranty coverage at checkout.
+                                    <span class="qa-author">- Answered by TECH SHOP on Jan 18, 2026</span>
+                                </div>
+                            </div>
+                            
+                            <div class="qa-item">
+                                <div class="question">
+                                    <strong>Q:</strong> What's included in the box?
+                                    <span class="qa-author">- Asked by Robert S. on Jan 15, 2026</span>
+                                </div>
+                                <div class="answer">
+                                    <strong>A:</strong> The package includes the main product, power adapter, USB cable, quick start guide, and warranty card. All necessary accessories are included.
+                                    <span class="qa-author">- Answered by TECH SHOP on Jan 15, 2026</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <button class="ask-question-btn">Ask a Question</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Shopping Cart Sidebar -->
+    <div id="cart-sidebar" class="cart-sidebar">
+        <div class="cart-header">
+            <h3>Shopping Cart</h3>
+            <button onclick="toggleCart()" class="close-btn">&times;</button>
+        </div>
+        <div id="cart-items" class="cart-items">
+            <!-- Cart items will be added here -->
+        </div>
+        <div class="cart-footer">
+            <div class="cart-total">
+                <strong>Total: $<span id="cart-total">0.00</span></strong>
+            </div>
+            <button onclick="checkout()" class="checkout-btn">Checkout</button>
+        </div>
+    </div>
+
+    <!-- About Section -->
+    <section id="about" class="about-section">
+        <div class="container">
+            <h2>About TECH SHOP</h2>
+            <p>Since 2020, TECH SHOP has been a leading authorized retailer of premium electronics and technology products. We partner directly with major brands to bring you authentic products at competitive prices, backed by manufacturer warranties and our commitment to exceptional customer service.</p>
+            <div class="about-features">
+                <div class="feature-box">
+                    <span class="feature-icon">✓</span>
+                    <h3>100% Authentic</h3>
+                    <p>All products are genuine and sourced directly from manufacturers</p>
+                </div>
+                <div class="feature-box">
+                    <span class="feature-icon">🚚</span>
+                    <h3>Fast Delivery</h3>
+                    <p>Free shipping on orders over $50 | Express delivery available</p>
+                </div>
+                <div class="feature-box">
+                    <span class="feature-icon">🔒</span>
+                    <h3>Secure Payments</h3>
+                    <p>SSL encrypted checkout with multiple payment options</p>
+                </div>
+                <div class="feature-box">
+                    <span class="feature-icon">↩️</span>
+                    <h3>Easy Returns</h3>
+                    <p>30-day return policy with free return shipping</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact-section">
+        <div class="container">
+            <h2>Get In Touch</h2>
+            <div class="contact-info">
+                <div class="contact-item">
+                    <span class="contact-icon">📧</span>
+                    <div>
+                        <h4>Email Support</h4>
+                        <p>support@techshop.com</p>
+                        <small>Response within 24 hours</small>
+                    </div>
+                </div>
+                <div class="contact-item">
+                    <span class="contact-icon">📞</span>
+                    <div>
+                        <h4>Phone Support</h4>
+                        <p>+1 (800) 555-TECH (8324)</p>
+                        <small>Mon-Fri: 9AM-6PM EST</small>
+                    </div>
+                </div>
+                <div class="contact-item">
+                    <span class="contact-icon">💬</span>
+                    <div>
+                        <h4>Live Chat</h4>
+                        <p>Available on website</p>
+                        <small>Instant assistance during business hours</small>
+                    </div>
+                </div>
+                <div class="contact-item">
+                    <span class="contact-icon">📍</span>
+                    <div>
+                        <h4>Corporate Office</h4>
+                        <p>2580 Innovation Drive, Suite 300</p>
+                        <small>San Jose, CA 95110, United States</small>
+                    </div>
+                </div>
+            </div>
+            <div class="business-hours">
+                <h3>Business Hours</h3>
+                <p><strong>Monday - Friday:</strong> 9:00 AM - 6:00 PM EST</p>
+                <p><strong>Saturday:</strong> 10:00 AM - 4:00 PM EST</p>
+                <p><strong>Sunday:</strong> Closed</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>About TECH SHOP</h4>
+                    <p>Your trusted source for premium electronics and technology products since 2020.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="#products">Products</a></li>
+                        <li><a href="#about">About Us</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                        <li><a href="manager.html">Manager Portal</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Customer Service</h4>
+                    <ul>
+                        <li><a href="#">Shipping & Returns</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms & Conditions</a></li>
+                        <li><a href="#">Warranty Information</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Connect With Us</h4>
+                    <div class="social-links">
+                        <a href="#" title="Facebook">📘</a>
+                        <a href="#" title="Twitter">🐦</a>
+                        <a href="#" title="Instagram">📷</a>
+                        <a href="#" title="LinkedIn">💼</a>
+                    </div>
+                    <p class="newsletter-signup">
+                        <strong>Newsletter:</strong><br>
+                        <input type="email" placeholder="Your email" class="footer-email-input">
+                        <button class="footer-subscribe-btn">Subscribe</button>
+                    </p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2020-2026 TECH SHOP, Inc. All rights reserved. | A registered trademark</p>
+                <p class="payment-methods">We accept: 💳 Visa | MasterCard | Amex | PayPal | Apple Pay</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
